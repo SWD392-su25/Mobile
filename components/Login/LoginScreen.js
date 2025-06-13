@@ -90,7 +90,7 @@ export default function Login() {
     if (!email) {
       setEmailError("Please enter your email.");
       hasError = true;
-    } 
+    }
     // else if (!email.endsWith("@fpt.edu.vn")) {
     //   setEmailError("Email must end with @fpt.edu.vn.");
     //   hasError = true;
@@ -117,7 +117,7 @@ export default function Login() {
           await SecureStore.deleteItemAsync("rememberMe");
         }
 
-        navigation.navigate("Home");
+        navigation.navigate("HomePage", { screen: "Home" });
       } catch (error) {
         console.error("SecureStore error:", error);
       }
@@ -127,11 +127,7 @@ export default function Login() {
   };
 
   return (
-    <ImageBackground
-      source={FPT}
-      style={styles.background}
-      resizeMode="cover"
-    >
+    <ImageBackground source={FPT} style={styles.background} resizeMode="cover">
       <View style={styles.overlay}>
         <Text style={styles.title}>Welcome FPT event</Text>
         <Text style={styles.subtitle}>Login to your account</Text>
