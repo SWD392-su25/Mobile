@@ -5,9 +5,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome } from "@expo/vector-icons";
 
 import LoginScreen from "./components/Login/LoginScreen";
+import HomePage from "./components/Home/HomePage";
 import ForgotPasswordScreen from "./screens/ForgotPasswordScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import HomePage from "./components/Home/HomePage";
+import ChangeInfoScreen from "./screens/ChangeInfoScreen";
+import Register from "./components/Register/Register";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -64,6 +66,8 @@ export default function App() {
           component={TabNavigator}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Change Info" component={ChangeInfoScreen} />
+        <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>
     </NavigationContainer>
   );
