@@ -7,13 +7,17 @@ const styles = StyleSheet.create({
   //   justifyContent: "center",
   //   padding: 20,
   // },
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  background: {
     flex: 1,
+  },
+  overlay: {
+    flexGrow: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    padding: 25,
   },
+
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -50,35 +54,9 @@ const styles = StyleSheet.create({
     right: 15,
     top: 15,
   },
-  rememberContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-
-  rememberGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 30,
-  },
-
-  rememberText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-    right: 10,
-  },
-
-  forgotPassword: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-    textDecorationLine: "underline",
-  },
   agreement: {
     fontSize: 12,
-    color: "#000",
+    color: "#fff",
     textAlign: "center",
     marginBottom: 20,
   },
@@ -87,7 +65,7 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     color: "#00CC00",
   },
-  LoginButton: {
+  createAccountButton: {
     backgroundColor: "#2672ec",
     width: "100%",
     padding: 15,
@@ -95,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  LoginText: {
+  createAccountText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
@@ -133,20 +111,6 @@ const styles = StyleSheet.create({
   footerText: {
     color: "#fff",
     fontSize: 14,
-  },
-  checkbox: {
-    marginRight: 10,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 13,
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  background: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
   },
 });
 

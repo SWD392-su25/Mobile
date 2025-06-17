@@ -20,11 +20,9 @@ import FPT from "../../assets/img/FPT.jpeg";
 // Hàm đăng nhập mock
 const mockLogin = (email, password) => {
   const users = [
-    { email: "duong@fpt.edu.vn", password: "123456", token: "token1" },
+    { email: "duong@gmail.com", password: "123456", token: "token1" },
     { email: "lolichua2k4@gmail.com", password: "1234", token: "token2" },
-    { email: "minh@fpt.edu.vn", password: "abc123", token: "token3" },
-    { email: "thu@fpt.edu.vn", password: "pass123", token: "token4" },
-    { email: "tuan@fpt.edu.vn", password: "fpt2024", token: "token5" },
+    { email: "Admin1@gmail.com", password: "abc123", token: "token3" },
   ];
 
   const user = users.find((u) => u.email === email && u.password === password);
@@ -91,10 +89,10 @@ export default function Login() {
       setEmailError("Please enter your email.");
       hasError = true;
     }
-    // else if (!email.endsWith("@fpt.edu.vn")) {
-    //   setEmailError("Email must end with @fpt.edu.vn.");
-    //   hasError = true;
-    // }
+    else if (!email.endsWith("@gmail.com")) {
+      setEmailError("Email must end with @gmail.com.");
+      hasError = true;
+    }
 
     if (!password) {
       setPasswordError("Please enter your password.");
@@ -125,6 +123,21 @@ export default function Login() {
       setPasswordError("Please enter again your password");
     }
   };
+  const CustomCheckBox = ({ value, onChange, style }) => {
+    return (
+      <Pressable
+        style={[styles.checkbox, style]}
+        onPress={() => onChange(!value)}
+      >
+        <Ionicons
+          name={value ? "checkbox-outline" : "square-outline"}
+          size={16}
+          color="#fff"
+        />
+      </Pressable>
+    );
+  };
+  
 
   return (
     <ImageBackground source={FPT} style={styles.background} resizeMode="cover">
@@ -168,7 +181,10 @@ export default function Login() {
 
         <View style={styles.rememberContainer}>
           <View style={styles.rememberGroup}>
-            <CustomCheckBox value={rememberMe} onChange={setRememberMe} />
+            <CustomCheckBox
+              value={rememberMe}
+              onChange={setRememberMe}
+            />
             <Text style={styles.rememberText}>Remember me</Text>
           </View>
 
@@ -193,6 +209,15 @@ export default function Login() {
           <Ionicons name="logo-google" size={20} color="#fff" />
           <Text style={styles.googleButtonText}>Sign In with Google</Text>
         </TouchableOpacity>
+        <Text style={styles.footerText}>
+          Don't have an account?{" "}
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate("Register")}
+          >
+            Sign up
+          </Text>
+        </Text>
       </View>
     </ImageBackground>
   );
