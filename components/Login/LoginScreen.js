@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Text,
   TextInput,
   View,
   TouchableOpacity,
   Pressable,
+  ImageBackground,
 } from "react-native";
 import styles from "../Login/LoginStyles";
-import { ImageBackground } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import {
   useFocusEffect,
@@ -17,30 +17,38 @@ import {
 import * as SecureStore from "expo-secure-store";
 import FPT from "../../assets/img/FPT.jpeg";
 
-// Hàm đăng nhập mock
 const mockLogin = (email, password) => {
   const users = [
-    { email: "duong@gmail.com", password: "123456", token: "token1" },
-    { email: "lolichua2k4@gmail.com", password: "1234", token: "token2" },
-    { email: "Admin1@gmail.com", password: "abc123", token: "token3" },
+    {
+      email: "Gnasche@gmail.com",
+      password: "1",
+      token: "token1",
+      username: "Gnasche",
+    },
+    {
+      email: "Admin1@gmail.com",
+      password: "a",
+      token: "token3",
+      username: "Admin One",
+    },
   ];
 
   const user = users.find((u) => u.email === email && u.password === password);
   if (user) {
-    return { success: true, token: user.token };
+    return { success: true, token: user.token, username: user.username };
   } else {
     return { success: false, message: "Invalid credentials" };
   }
 };
 
-// Component Checkbox Tùy chỉnh
+
 const CustomCheckBox = ({ value, onChange }) => {
   return (
     <Pressable style={styles.checkbox} onPress={() => onChange(!value)}>
       <Ionicons
         name={value ? "checkbox-outline" : "square-outline"}
         size={20}
-        color="black"
+        color="#fff"
       />
     </Pressable>
   );
@@ -56,7 +64,7 @@ export default function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  // Load credentials khi mở lại màn hình
+
   useFocusEffect(
     useCallback(() => {
       const loadCredentials = async () => {
@@ -78,7 +86,7 @@ export default function Login() {
     }, [route])
   );
 
-  // Xử lý đăng nhập mock
+
   const handleLogin = async () => {
     setEmailError("");
     setPasswordError("");
@@ -88,8 +96,7 @@ export default function Login() {
     if (!email) {
       setEmailError("Please enter your email.");
       hasError = true;
-    }
-    else if (!email.endsWith("@gmail.com")) {
+    } else if (!email.endsWith("@gmail.com")) {
       setEmailError("Email must end with @gmail.com.");
       hasError = true;
     }
@@ -115,7 +122,9 @@ export default function Login() {
           await SecureStore.deleteItemAsync("rememberMe");
         }
 
-        navigation.navigate("HomePage", { screen: "Home" });
+        navigation.navigate("HomePage", {
+          username: result.username,
+        });
       } catch (error) {
         console.error("SecureStore error:", error);
       }
@@ -123,21 +132,6 @@ export default function Login() {
       setPasswordError("Please enter again your password");
     }
   };
-  const CustomCheckBox = ({ value, onChange, style }) => {
-    return (
-      <Pressable
-        style={[styles.checkbox, style]}
-        onPress={() => onChange(!value)}
-      >
-        <Ionicons
-          name={value ? "checkbox-outline" : "square-outline"}
-          size={16}
-          color="#fff"
-        />
-      </Pressable>
-    );
-  };
-  
 
   return (
     <ImageBackground source={FPT} style={styles.background} resizeMode="cover">
@@ -181,10 +175,7 @@ export default function Login() {
 
         <View style={styles.rememberContainer}>
           <View style={styles.rememberGroup}>
-            <CustomCheckBox
-              value={rememberMe}
-              onChange={setRememberMe}
-            />
+            <CustomCheckBox value={rememberMe} onChange={setRememberMe} />
             <Text style={styles.rememberText}>Remember me</Text>
           </View>
 
@@ -209,6 +200,7 @@ export default function Login() {
           <Ionicons name="logo-google" size={20} color="#fff" />
           <Text style={styles.googleButtonText}>Sign In with Google</Text>
         </TouchableOpacity>
+
         <Text style={styles.footerText}>
           Don't have an account?{" "}
           <Text

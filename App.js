@@ -1,4 +1,3 @@
-import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -14,7 +13,9 @@ import Register from "./components/Register/Register";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+const TabNavigator = ({ route }) => {
+  const { username } = route.params || {};
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -27,7 +28,7 @@ const TabNavigator = () => {
     >
       <Tab.Screen
         name="Home"
-        component={HomePage}
+        children={() => <HomePage username={username} />}
         options={{
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={24} color={color} />
@@ -63,7 +64,7 @@ export default function App() {
         />
         <Stack.Screen
           name="HomePage"
-          component={TabNavigator}
+          children={(props) => <TabNavigator {...props} />}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Change Info" component={ChangeInfoScreen} />
