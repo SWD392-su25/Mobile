@@ -9,6 +9,8 @@ import ForgotPasswordScreen from "./screens/ForgotPasswordScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ChangeInfoScreen from "./screens/ChangeInfoScreen";
 import Register from "./components/Register/Register";
+import DetailScreen from "./screens/DetailScreen";
+import RegisterEventScreen from "./screens/RegisterEventScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,7 +30,7 @@ const TabNavigator = ({ route }) => {
     >
       <Tab.Screen
         name="Home"
-        children={() => <HomePage username={username} />}
+        children={(props) => <HomePage {...props} username={username} />} // ✅ truyền navigation, route, ...
         options={{
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={24} color={color} />
@@ -69,6 +71,11 @@ export default function App() {
         />
         <Stack.Screen name="Change Info" component={ChangeInfoScreen} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="DetailScreen" component={DetailScreen} />
+        <Stack.Screen
+          name="RegisterEvent"
+          children={(props) => <RegisterEventScreen {...props} />}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
