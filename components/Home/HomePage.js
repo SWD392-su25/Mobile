@@ -1,8 +1,15 @@
-import { View, Text, TextInput, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Swiper from "react-native-swiper";
 
-export default function HomePage({ username = "USER" }) {
+export default function HomePage({ navigation, username = "USER" }) {
   const carouselItems = [
     {
       title: "Event 1",
@@ -45,8 +52,16 @@ export default function HomePage({ username = "USER" }) {
   ];
 
   const renderEventItem = (item) => (
-    <View
+    <TouchableOpacity
       key={item.id}
+      onPress={() =>
+        navigation.navigate("DetailScreen", {
+          eventID: item.id,
+          title: item.title,
+          image: item.image,
+          description: item.description,
+        })
+      }
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -61,9 +76,8 @@ export default function HomePage({ username = "USER" }) {
         style={{ width: 60, height: 60, borderRadius: 8, marginRight: 10 }}
       />
       <Text style={{ fontSize: 16, color: "#000" }}>{item.title}</Text>
-    </View>
+    </TouchableOpacity>
   );
-
   return (
     <ScrollView style={{ padding: 20 }} showsVerticalScrollIndicator={false}>
       <Text style={{ fontSize: 16, color: "#000" }}>Xin chào {username}</Text>
