@@ -10,6 +10,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import Swiper from "react-native-swiper";
 
 export default function HomePage({ navigation, username = "USER" }) {
+ 
+ // fake data
   const carouselItems = [
     {
       title: "Event 1",
@@ -25,6 +27,7 @@ export default function HomePage({ navigation, username = "USER" }) {
     },
   ];
 
+  // fake data
   const studyEvents = [
     {
       id: "1",

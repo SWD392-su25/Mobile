@@ -11,6 +11,7 @@ import ChangeInfoScreen from "./screens/ChangeInfoScreen";
 import Register from "./components/Register/Register";
 import DetailScreen from "./screens/DetailScreen";
 import RegisterEventScreen from "./screens/RegisterEventScreen";
+import RegisterSuccessScreen from "./screens/RegisterSuccessScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -75,6 +76,10 @@ export default function App() {
         <Stack.Screen
           name="RegisterEvent"
           children={(props) => <RegisterEventScreen {...props} />}
+        />
+        <Stack.Screen
+          name="RegisterSuccess"
+          component={RegisterSuccessScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

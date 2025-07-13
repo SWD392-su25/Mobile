@@ -20,9 +20,11 @@ export default function RegisterEventScreen({ route, navigation }) {
       return;
     }
 
-    // Giả lập đăng ký (sau này bạn có thể gửi API ở đây)
-    Alert.alert("Thành công", `Bạn đã đăng ký tham gia sự kiện: ${title}`);
-    navigation.goBack();
+    navigation.navigate("RegisterSuccess", {
+      name,
+      email,
+      eventName: title,
+    });
   };
 
   return (
