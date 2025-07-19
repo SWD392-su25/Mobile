@@ -12,6 +12,7 @@ import Register from "./components/Register/Register";
 import DetailScreen from "./screens/DetailScreen";
 import RegisterEventScreen from "./screens/RegisterEventScreen";
 import RegisterSuccessScreen from "./screens/RegisterSuccessScreen";
+import RegistrationHistoryScreen from "./screens/RegistrationHistoryScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,7 +32,7 @@ const TabNavigator = ({ route }) => {
     >
       <Tab.Screen
         name="Home"
-        children={(props) => <HomePage {...props} username={username} />} // ✅ truyền navigation, route, ...
+        children={(props) => <HomePage {...props} username={username} />}
         options={{
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={24} color={color} />
@@ -80,6 +81,11 @@ export default function App() {
         <Stack.Screen
           name="RegisterSuccess"
           component={RegisterSuccessScreen}
+        />
+        <Stack.Screen
+          name="RegistrationHistoryScreen"
+          component={RegistrationHistoryScreen}
+          options={{ title: "Lịch sử đăng ký" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

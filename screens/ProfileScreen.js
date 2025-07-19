@@ -44,15 +44,18 @@ function ProfileScreen({ navigation }) {
             <Text style={styles.optionText}>Thay đổi</Text>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity style={styles.optionButton}>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => navigation.navigate("RegistrationHistoryScreen")}
+          >
             <FontAwesome
               name="history"
               size={20}
               color="#fff"
               style={styles.icon}
             />
-            <Text style={styles.optionText}>Lịch sử</Text>
-          </TouchableOpacity> */}
+            <Text style={styles.optionText}>Lịch sử đăng ký</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionButton}>
             <FontAwesome
@@ -62,16 +65,6 @@ function ProfileScreen({ navigation }) {
               style={styles.icon}
             />
             <Text style={styles.optionText}>Thông báo</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionButton}>
-            <FontAwesome
-              name="bell"
-              size={20}
-              color="#fff"
-              style={styles.icon}
-            />
-            <Text style={styles.optionText}>Theo dõi sự kiện</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
