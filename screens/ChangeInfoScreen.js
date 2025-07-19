@@ -52,19 +52,13 @@ export default function ChangeInfoScreen({ navigation }) {
       <TouchableOpacity style={styles.continueButton}>
         <Text style={styles.continueText}>Save</Text>
       </TouchableOpacity>
-{/* 
+
       <TouchableOpacity
         style={styles.optionButton}
         onPress={() => navigation.navigate("HomePage", { screen: "Home" })}
       >
-        <FontAwesome
-          name="arrow-left"
-          size={20}
-          color="#fff"
-          style={styles.icon}
-        />
         <Text style={styles.optionText}>Về trang chủ</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   );
 }
@@ -115,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   continueButton: {
-    backgroundColor: "#000",
+    backgroundColor: "red",
     width: "100%",
     padding: 15,
     borderRadius: 10,
@@ -126,5 +120,20 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  optionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#007AFF", // màu xanh dương
+    padding: 12,
+    borderRadius: 10,
+    width: "100%",
+    justifyContent: "center",
+  },
+  optionText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 8,
   },
 });

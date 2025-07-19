@@ -6,6 +6,7 @@ import {
   useRoute,
   CommonActions,
 } from "@react-navigation/native";
+import QRCode from "react-native-qrcode-svg";
 
 export default function RegisterSuccessScreen() {
   const navigation = useNavigation();
@@ -22,6 +23,8 @@ export default function RegisterSuccessScreen() {
     console.log("✅ Đã đăng ký:", { name, email, eventName });
   }, []);
 
+  const qrValue = JSON.stringify({ name, email, event: eventName });
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Đăng ký thành công!</Text>
@@ -34,10 +37,18 @@ export default function RegisterSuccessScreen() {
         Email xác nhận sẽ được gửi đến: <Text style={styles.bold}>{email}</Text>
       </Text>
 
-      <View style={{ marginTop: 20 }}>
+      <Text style={[styles.text, { marginTop: 20, marginBottom: 10 }]}>
+        Mã QR xác nhận:
+      </Text>
+
+      <View style={styles.qrContainer}>
+        <QRCode value={qrValue} size={180} />
+      </View>
+
+      <View style={{ marginTop: 30 }}>
         <Button
           title="Quay về trang chủ"
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("HomePage", { screen: "Home" })}
           color="#1976d2"
         />
       </View>
@@ -73,5 +84,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     marginBottom: 15,
+  },
+  qrContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    backgroundColor: "#fff",
   },
 });

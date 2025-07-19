@@ -8,23 +8,35 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RegisterEventScreen({ route, navigation }) {
   const { title } = route.params;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!name || !email) {
       Alert.alert("Thiếu thông tin", "Vui lòng điền đầy đủ họ tên và email.");
       return;
     }
 
-    navigation.navigate("RegisterSuccess", {
-      name,
-      email,
-      eventName: title,
-    });
+    const newRegistration = { name, email, eventName: title };
+
+    try {
+      const existing = await AsyncStorage.getItem("registrationHistory");
+      const history = existing ? JSON.parse(existing) : [];
+      history.push(newRegistration);
+      await AsyncStorage.setItem(
+        "registrationHistory",
+        JSON.stringify(history)
+      );
+
+      navigation.navigate("RegisterSuccess", newRegistration);
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể lưu đăng ký vào lịch sử.");
+      console.error("Lỗi lưu đăng ký:", error);
+    }
   };
 
   return (
