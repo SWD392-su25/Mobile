@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,40 +6,34 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-
-const allEvents = [
-  {
-    id: "1",
-    title: "Khóa học Trí tuệ nhân tạo",
-    image: require("../assets/imgHome/study1.jpg"),
-    description:
-      "Khám phá kiến thức AI hiện đại và ứng dụng thực tế trong cuộc sống.",
-  },
-  {
-    id: "2",
-    title: "Định hướng tương lai",
-    image: require("../assets/imgHome/study2.jpg"),
-    description: "Hội thảo định hướng nghề nghiệp dành cho sinh viên năm nhất.",
-  },
-  {
-    id: "3",
-    title: "Tận hưởng âm nhạc FPT",
-    image: require("../assets/imgHome/fun1.jpg"),
-    description: "Sân khấu âm nhạc sôi động cùng các ban nhạc sinh viên.",
-  },
-  {
-    id: "4",
-    title: "Giới thiệu các chuyên ngành 2025",
-    image: require("../assets/imgHome/fun2.jpg"),
-    description: "Tìm hiểu chi tiết các chuyên ngành mới sẽ mở vào năm 2025.",
-  },
-];
 
 export default function DetailScreen({ route, navigation }) {
   const { eventID } = route.params;
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const event = allEvents.find((item) => item.id === eventID);
+  useEffect(() => {
+    fetch(`http://103.90.227.51:8080/api/events/${eventID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setEvent(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi gọi API chi tiết sự kiện:", err);
+        setLoading(false);
+      });
+  }, [eventID]);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#8F6B4A" />
+      </View>
+    );
+  }
 
   if (!event) {
     return (
@@ -52,16 +46,22 @@ export default function DetailScreen({ route, navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
-        <Image source={event.image} style={styles.image} />
-        <Text style={styles.title}>{event.title}</Text>
+        <Image
+          source={
+            event.image
+              ? { uri: event.image }
+              : require("../assets/img/FPT.jpeg")
+          }
+          style={styles.image}
+        />
+        <Text style={styles.title}>{event.name}</Text>
         <Text style={styles.description}>{event.description}</Text>
 
-        {/* Nút đăng ký tham gia */}
         <TouchableOpacity
           style={styles.registerButton}
           onPress={() =>
             navigation.navigate("RegisterEvent", {
-              title: event.title,
+              title: event.name,
               eventID: event.id,
             })
           }

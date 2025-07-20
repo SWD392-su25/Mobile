@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -5,54 +6,27 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Swiper from "react-native-swiper";
 
 export default function HomePage({ navigation, username = "USER" }) {
- 
- // fake data
-  const carouselItems = [
-    {
-      title: "Event 1",
-      image: require("../../assets/imgHome/imgHome1.jpg"),
-    },
-    {
-      title: "Event 2",
-      image: require("../../assets/imgHome/imgHome1.jpg"),
-    },
-    {
-      title: "Event 3",
-      image: require("../../assets/imgHome/imgHome1.jpg"),
-    },
-  ];
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // fake data
-  const studyEvents = [
-    {
-      id: "1",
-      title: "Khóa học Trí tuệ nhân tạo",
-      image: require("../../assets/imgHome/study1.jpg"),
-    },
-    {
-      id: "2",
-      title: "Định hướng tương lai",
-      image: require("../../assets/imgHome/study2.jpg"),
-    },
-  ];
-
-  const funEvents = [
-    {
-      id: "3",
-      title: "Tận hưởng âm nhạc FPT",
-      image: require("../../assets/imgHome/fun1.jpg"),
-    },
-    {
-      id: "4",
-      title: "Giới thiệu các chuyên ngành 2025",
-      image: require("../../assets/imgHome/fun2.jpg"),
-    },
-  ];
+  useEffect(() => {
+    fetch("http://103.90.227.51:8080/api/events")
+      .then((res) => res.json())
+      .then((data) => {
+        setEvents(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi gọi API sự kiện:", err);
+        setLoading(false);
+      });
+  }, []);
 
   const renderEventItem = (item) => (
     <TouchableOpacity
@@ -60,7 +34,7 @@ export default function HomePage({ navigation, username = "USER" }) {
       onPress={() =>
         navigation.navigate("DetailScreen", {
           eventID: item.id,
-          title: item.title,
+          title: item.name,
           image: item.image,
           description: item.description,
         })
@@ -75,16 +49,31 @@ export default function HomePage({ navigation, username = "USER" }) {
       }}
     >
       <Image
-        source={item.image}
+        source={
+          item.image
+            ? { uri: item.image }
+            : require("../../assets/img/FPT.jpeg")
+        }
         style={{ width: 60, height: 60, borderRadius: 8, marginRight: 10 }}
       />
-      <Text style={{ fontSize: 16, color: "#000" }}>{item.title}</Text>
+      <Text style={{ fontSize: 16, color: "#000" }}>{item.name}</Text>
     </TouchableOpacity>
   );
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={{ padding: 20 }} showsVerticalScrollIndicator={false}>
+      {/* Chào người dùng */}
       <Text style={{ fontSize: 16, color: "#000" }}>Xin chào {username}</Text>
 
+      {/* Search bar */}
       <View
         style={{
           flexDirection: "row",
@@ -108,6 +97,7 @@ export default function HomePage({ navigation, username = "USER" }) {
         />
       </View>
 
+      {/* Sự kiện nổi bật - Dùng 3 sự kiện đầu */}
       <Text
         style={{
           fontSize: 18,
@@ -120,18 +110,11 @@ export default function HomePage({ navigation, username = "USER" }) {
         Sự kiện nổi bật
       </Text>
       <View style={{ height: 200, marginBottom: 20 }}>
-        <Swiper
-          showsButtons={false}
-          autoplay={true}
-          autoplayTimeout={3}
-          showsPagination={true}
-          dotStyle={{ backgroundColor: "rgba(255,255,255,0.3)" }}
-          activeDotStyle={{ backgroundColor: "#fff" }}
-        >
-          {carouselItems.map((item, index) => (
+        <Swiper autoplay={true} autoplayTimeout={3} showsPagination={true}>
+          {events.slice(0, 3).map((item, index) => (
             <View key={index} style={{ flex: 1 }}>
               <Image
-                source={item.image}
+                source={{ uri: item.image }}
                 style={{ width: "100%", height: "100%", borderRadius: 10 }}
                 resizeMode="cover"
               />
@@ -148,14 +131,14 @@ export default function HomePage({ navigation, username = "USER" }) {
                   textShadowRadius: 10,
                 }}
               >
-                {item.title}
+                {item.name}
               </Text>
             </View>
           ))}
         </Swiper>
       </View>
 
-      {/* Danh sách sự kiện học tập */}
+      {/* Danh sách tất cả sự kiện */}
       <Text
         style={{
           fontSize: 18,
@@ -164,23 +147,9 @@ export default function HomePage({ navigation, username = "USER" }) {
           marginBottom: 10,
         }}
       >
-        Sự kiện học tập
+        Tất cả sự kiện
       </Text>
-      {studyEvents.map((item) => renderEventItem(item))}
-
-      {/* Danh sách sự kiện vui chơi */}
-      <Text
-        style={{
-          fontSize: 18,
-          fontWeight: "bold",
-          color: "#000",
-          marginTop: 20,
-          marginBottom: 10,
-        }}
-      >
-        Sự kiện vui chơi
-      </Text>
-      {funEvents.map((item) => renderEventItem(item))}
+      {events.map((item) => renderEventItem(item))}
     </ScrollView>
   );
 }

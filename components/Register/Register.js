@@ -1,153 +1,148 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
+  View,
   Text,
   TextInput,
-  View,
   TouchableOpacity,
-  Alert,
+  ScrollView,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
-import Constants from "expo-constants";
-import styles from "../Register/RegisterStyles"
-import FPT from "../../assets/img/FPT.jpeg";
+import styles from "./RegisterStyles";
+import fptBackground from "../../assets/img/FPT.jpeg";
 
-// const API_URL =
-//   Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL ||
-//   "https://bookshelf-be.onrender.com";
+import { registerUser } from "../api/authAPI";
 
-export default function Register() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [userName, setUsername] = useState("");
+const Register = () => {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [gender, setGender] = useState("MALE");
+  const [phone, setPhone] = useState("");
+
   const navigation = useNavigation();
 
   const handleRegister = async () => {
-    if (!userName || !email || !password || !confirmPassword) {
-      Alert.alert("Error", "Please fill all fields.");
+    if (!fullName || !email || !password || !phone) {
+      Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin");
       return;
     }
 
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match!");
-      return;
-    }
+    const result = await registerUser({
+      fullName,
+      email,
+      password,
+      gender,
+      phone,
+    });
 
-    try {
-      const response = await fetch(`${API_URL}/api/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userName, email, password }),
-      });
-      console.log(userName, email, password);
-      const data = await response.json();
-
-      if (response.ok) {
-        Alert.alert("Success", "Registration successful!");
-        navigation.navigate("Login");
-      } else {
-        Alert.alert("Error", data.message || "Registration failed.");
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Something went wrong!");
+    if (result.success) {
+      Alert.alert("Thành công", "Tạo tài khoản thành công");
+      navigation.navigate("Login");
+    } else {
+      Alert.alert("Thất bại", result.message || "Đăng ký thất bại");
     }
   };
 
   return (
-    <ImageBackground source={FPT} style={styles.background} resizeMode="cover">
-      <View style={styles.overlay}>
-        <Text style={styles.title}>Let’s get started!</Text>
-        <Text style={styles.subtitle}>Create your account</Text>
+    <ImageBackground
+      source={fptBackground}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <ScrollView contentContainerStyle={styles.overlay}>
+        <Text style={styles.title}>Tạo tài khoản</Text>
+        <Text style={styles.subtitle}>Điền thông tin để đăng ký</Text>
 
+        {/* Full Name */}
         <TextInput
+          placeholder="Họ và tên"
           style={styles.input}
-          placeholder="Username"
-          value={userName}
-          onChangeText={setUsername}
+          value={fullName}
+          onChangeText={setFullName}
         />
+
+        {/* Email */}
         <TextInput
-          style={styles.input}
           placeholder="Email"
-          keyboardType="email-address"
+          style={styles.input}
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
 
+        {/* Phone */}
+        <TextInput
+          placeholder="Số điện thoại"
+          style={styles.input}
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+        />
+
+        {/* Password */}
         <View style={styles.inputContainer}>
           <TextInput
+            placeholder="Mật khẩu"
             style={styles.inputPassword}
-            placeholder="Password"
-            secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
+            secureTextEntry={!showPassword}
           />
-          <TouchableOpacity
+          <Ionicons
+            name={showPassword ? "eye" : "eye-off"}
+            size={24}
+            color="gray"
+            style={styles.icon}
             onPress={() => setShowPassword(!showPassword)}
-            style={styles.icon}
-          >
-            <Ionicons
-              name={showPassword ? "eye-outline" : "eye-off-outline"}
-              size={20}
-              color="gray"
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.inputPassword}
-            placeholder="Confirm Password"
-            secureTextEntry={!showConfirmPassword}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
           />
-          <TouchableOpacity
-            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            style={styles.icon}
-          >
-            <Ionicons
-              name={showConfirmPassword ? "eye-outline" : "eye-off-outline"}
-              size={20}
-              color="gray"
-            />
-          </TouchableOpacity>
         </View>
 
+        {/* Gender Picker */}
+        <View
+          style={{
+            width: "100%",
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            marginBottom: 15,
+          }}
+        >
+          <Picker
+            selectedValue={gender}
+            onValueChange={(itemValue) => setGender(itemValue)}
+            style={{ width: "100%", height: 50 }}
+          >
+            <Picker.Item label="Nam" value="MALE" />
+            <Picker.Item label="Nữ" value="FEMALE" />
+            <Picker.Item label="Khác" value="OTHER" />
+          </Picker>
+        </View>
+
+        {/* Register Button */}
         <TouchableOpacity
           style={styles.createAccountButton}
           onPress={handleRegister}
         >
-          <Text style={styles.createAccountText}>Create account</Text>
-        </TouchableOpacity>
-
-        <View style={styles.dividerContainer}>
-          <View style={styles.divider} />
-          <Text style={styles.orText}>OR</Text>
-          <View style={styles.divider} />
-        </View>
-
-        <TouchableOpacity style={styles.googleButton}>
-          <Ionicons name="logo-google" size={20} color="#fff" />
-          <Text style={styles.googleButtonText}>Sign In with Google</Text>
+          <Text style={styles.createAccountText}>Đăng ký</Text>
         </TouchableOpacity>
 
         <Text style={styles.footerText}>
-          Already have an account?{" "}
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.link}>Sign in</Text>
-          </TouchableOpacity>
+          Đã có tài khoản?{" "}
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate("Login")}
+          >
+            Đăng nhập
+          </Text>
         </Text>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
-}
+};
 
-
+export default Register;
