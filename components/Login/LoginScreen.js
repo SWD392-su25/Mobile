@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Pressable,
   ImageBackground,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import styles from "../Login/LoginStyles";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,76 +18,44 @@ import {
 } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 import FPT from "../../assets/img/FPT.jpeg";
+import { loginUser } from "../api/authAPI";
+const CustomCheckBox = ({ value, onChange }) => (
+  <Pressable style={styles.checkbox} onPress={() => onChange(!value)}>
+    <Ionicons
+      name={value ? "checkbox-outline" : "square-outline"}
+      size={20}
+      color="#fff"
+    />
+  </Pressable>
+);
 
-const mockLogin = (email, password) => {
-  const users = [
-    {
-      email: "Gnasche@gmail.com",
-      password: "1",
-      token: "token1",
-      username: "Gnasche",
-    },
-    {
-      email: "Admin1@gmail.com",
-      password: "a",
-      token: "token3",
-      username: "Admin One",
-    },
-  ];
-
-  const user = users.find((u) => u.email === email && u.password === password);
-  if (user) {
-    return { success: true, token: user.token, username: user.username };
-  } else {
-    return { success: false, message: "Invalid credentials" };
-  }
-};
-
-
-const CustomCheckBox = ({ value, onChange }) => {
-  return (
-    <Pressable style={styles.checkbox} onPress={() => onChange(!value)}>
-      <Ionicons
-        name={value ? "checkbox-outline" : "square-outline"}
-        size={20}
-        color="#fff"
-      />
-    </Pressable>
-  );
-};
-
-export default function Login() {
+export default function LoginScreen() {
   const route = useRoute();
   const navigation = useNavigation();
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      const loadCredentials = async () => {
-        try {
-          const savedEmail = await SecureStore.getItemAsync("savedEmail");
-          const savedPassword = await SecureStore.getItemAsync("savedPassword");
-          const savedRememberMe = await SecureStore.getItemAsync("rememberMe");
+      (async () => {
+        const savedEmail = await SecureStore.getItemAsync("savedEmail");
+        const savedPassword = await SecureStore.getItemAsync("savedPassword");
+        const savedRememberMe = await SecureStore.getItemAsync("rememberMe");
 
-          if (savedRememberMe === "true" && savedEmail && savedPassword) {
-            setEmail(savedEmail);
-            setPassword(savedPassword);
-            setRememberMe(true);
-          }
-        } catch (error) {
-          console.error("Error loading saved credentials:", error);
+        if (savedRememberMe === "true" && savedEmail && savedPassword) {
+          setEmail(savedEmail);
+          setPassword(savedPassword);
+          setRememberMe(true);
         }
-      };
-      loadCredentials();
+      })();
     }, [route])
   );
-
 
   const handleLogin = async () => {
     setEmailError("");
@@ -108,7 +78,9 @@ export default function Login() {
 
     if (hasError) return;
 
-    const result = mockLogin(email, password);
+    setLoading(true);
+    const result = await loginUser(email, password);
+    setLoading(false);
 
     if (result.success) {
       try {
@@ -122,14 +94,17 @@ export default function Login() {
           await SecureStore.deleteItemAsync("rememberMe");
         }
 
+        await SecureStore.setItemAsync("accessToken", result.token);
+
         navigation.navigate("HomePage", {
           username: result.username,
         });
       } catch (error) {
         console.error("SecureStore error:", error);
+        Alert.alert("Storage Error", "Failed to save login credentials.");
       }
     } else {
-      setPasswordError("Please enter again your password");
+      setPasswordError(result.message);
     }
   };
 
@@ -143,6 +118,7 @@ export default function Login() {
           style={styles.input}
           placeholder="Email"
           keyboardType="email-address"
+          autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
         />
@@ -178,17 +154,26 @@ export default function Login() {
             <CustomCheckBox value={rememberMe} onChange={setRememberMe} />
             <Text style={styles.rememberText}>Remember me</Text>
           </View>
-
           <TouchableOpacity
-            onPress={() => navigation.navigate("Forgot Password")}
+            onPress={() => navigation.navigate("ForgotPassword")}
           >
             <Text style={styles.forgotPassword}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.LoginButton} onPress={handleLogin}>
-          <Text style={styles.LoginText}>Login</Text>
+        <TouchableOpacity
+          style={styles.LoginButton}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.LoginText}>
+            {loading ? "Logging in..." : "Login"}
+          </Text>
         </TouchableOpacity>
+
+        {loading && (
+          <ActivityIndicator color="#fff" style={{ marginTop: 10 }} />
+        )}
 
         <View style={styles.dividerContainer}>
           <View style={styles.divider} />
