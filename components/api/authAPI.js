@@ -35,6 +35,7 @@ export const loginUser = async (email, password) => {
       success: true,
       token: data.token || "",
       username: data.username || data.fullName || email,
+      id: data.id || "",
     };
   } catch (error) {
     console.error("Login API error:", error);

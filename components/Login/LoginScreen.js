@@ -93,8 +93,9 @@ export default function LoginScreen() {
           await SecureStore.deleteItemAsync("savedPassword");
           await SecureStore.deleteItemAsync("rememberMe");
         }
-
+        console.log("Login successful:", result);
         await SecureStore.setItemAsync("accessToken", result.token);
+        await SecureStore.setItemAsync("accountId", result.id+'');
 
         navigation.navigate("HomePage", {
           username: result.username,
