@@ -5,14 +5,15 @@ import { FontAwesome } from "@expo/vector-icons";
 
 import LoginScreen from "./components/Login/LoginScreen";
 import HomePage from "./components/Home/HomePage";
-import ForgotPasswordScreen from "./screens/ForgotPasswordScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ChangeInfoScreen from "./screens/ChangeInfoScreen";
 import Register from "./components/Register/Register";
 import DetailScreen from "./screens/DetailScreen";
-import RegisterEventScreen from "./screens/RegisterEventScreen";
-import RegisterSuccessScreen from "./screens/RegisterSuccessScreen";
-import RegistrationHistoryScreen from "./screens/RegistrationHistoryScreen";
+
+import ScanScreen from "./screens/Scan";
+import CheckInScreen from "./screens/CheckIn";
+import PaymentScreen from "./screens/Payment";
+import EventList from "./screens/EventList";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,6 +41,26 @@ const TabNavigator = ({ route }) => {
         }}
       />
       <Tab.Screen
+        name="Scan"
+        component={ScanScreen} // Updated component for scanning
+        options={{
+          title: 'Scan QR Code',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="qrcode" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="EventList"
+        component={EventList} // Updated component for scanning
+        options={{
+          title: 'Registered Event',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="list" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -62,11 +83,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Forgot Password"
-          component={ForgotPasswordScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="HomePage"
           children={(props) => <TabNavigator {...props} />}
           options={{ headerShown: false }}
@@ -74,18 +90,16 @@ export default function App() {
         <Stack.Screen name="Change Info" component={ChangeInfoScreen} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="DetailScreen" component={DetailScreen} />
+
         <Stack.Screen
-          name="RegisterEvent"
-          children={(props) => <RegisterEventScreen {...props} />}
+          name="CheckIn"
+          component={CheckInScreen}
+          options={{ title: "Check-In" }}
         />
         <Stack.Screen
-          name="RegisterSuccess"
-          component={RegisterSuccessScreen}
-        />
-        <Stack.Screen
-          name="RegistrationHistoryScreen"
-          component={RegistrationHistoryScreen}
-          options={{ title: "Lịch sử đăng ký" }}
+          name="Payment"
+          component={PaymentScreen}
+          options={{ title: "Payment" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
